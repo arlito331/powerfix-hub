@@ -13,22 +13,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
 
 /* ---- lock screen ---- */
 .lock-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;}
-.lock-card{width:100%;max-width:340px;}
-.lock-card .brand{margin-bottom:32px;}
-.lock-title{font-size:26px;font-weight:700;letter-spacing:-0.6px;margin-bottom:6px;}
-.lock-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
-.lock-field label{display:block;font-size:10px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:7px;}
-.lock-field input{width:100%;background:#0a0a0a;border:1px solid var(--border);color:var(--text);border-radius:7px;padding:11px 14px;font-size:14px;outline:none;font-family:inherit;}
-.lock-field input:focus{border-color:var(--blue);}
-.lock-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:7px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;margin-top:18px;}
-.lock-btn:hover{background:#3369c4;}
-.lock-error{font-size:12px;color:var(--red);margin-top:10px;min-height:14px;}
+.lock-card{display:flex;flex-direction:column;align-items:center;}
+.lock-card .brand-name{font-size:22px;user-select:none;}
 
 /* ---- shared brand ---- */
 .brand{display:flex;align-items:center;gap:9px;}
 .brand-mark{width:26px;height:26px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .brand-name{font-size:17px;font-weight:700;letter-spacing:-0.3px;}
-.brand-name span{color:var(--red);}
+.brand-name span{color:var(--red);cursor:default;}
 
 /* ---- main page (hidden until unlocked) ---- */
 .page{display:none;grid-template-columns:minmax(0,760px) 1fr;min-height:100vh;}
@@ -76,16 +68,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
       <div class="brand-mark">
         <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
-      <div class="brand-name">Power<span>Fix</span></div>
+      <div class="brand-name">Power<span>Fi<span id="lockX" onclick="tryUnlock()">x</span></span></div>
     </div>
-    <div class="lock-title">Welcome back</div>
-    <div class="lock-sub">Enter the passcode to view developer tools.</div>
-    <div class="lock-field">
-      <label>Passcode</label>
-      <input type="password" id="passInput" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();tryUnlock();}"/>
-    </div>
-    <button class="lock-btn" onclick="tryUnlock()">Sign in →</button>
-    <div class="lock-error" id="lockError"></div>
   </div>
 </div>
 
@@ -107,25 +91,33 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
 
       <div class="tool-grid">
         <a class="tool-tile" href="https://arlito331.github.io/potholewatch/">
-          <div class="tool-icon" style="background:var(--red);">W</div>
+          <div class="tool-icon" style="background:var(--red);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0a0a0a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.8-6.5 10-6.5S22 12 22 12s-3.8 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6" fill="#0a0a0a" stroke="none"/></svg>
+          </div>
           <div class="tool-name">PotholeWatch</div>
           <div class="tool-desc">Reactive incident monitor — scans news &amp; social media, emails evidence digests</div>
         </a>
 
         <a class="tool-tile" href="https://arlito331.github.io/powerfix-case-study/">
-          <div class="tool-icon" style="background:var(--blue);">C</div>
+          <div class="tool-icon" style="background:var(--blue);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0a0a0a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l4.5 4.5V21.5H6z"/><path d="M14 2.5V7h4.5"/><path d="M9 13v5M12.2 11v7M15.4 14.5v3.5"/></svg>
+          </div>
           <div class="tool-name">Case Study Generator</div>
           <div class="tool-desc">ROI PDFs — PowerFix vs. conventional government repair cost, by territory</div>
         </a>
 
         <a class="tool-tile" href="https://arlito331.github.io/potholeradar/">
-          <div class="tool-icon" style="background:var(--blue);">R</div>
+          <div class="tool-icon" style="background:var(--blue);">
+            <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#0a0a0a" stroke-width="1.3" opacity=".5"/><circle cx="12" cy="12" r="5.7" fill="none" stroke="#0a0a0a" stroke-width="1.2" opacity=".55"/><path d="M12 12 L12 2.8 A9.2 9.2 0 0 1 21 14.8 Z" fill="#0a0a0a" opacity=".6"/><circle cx="12" cy="12" r="1.8" fill="#0a0a0a"/></svg>
+          </div>
           <div class="tool-name">PotholeRadar</div>
           <div class="tool-desc">Proactive area scanner — Street View + Claude Vision, no report needed</div>
         </a>
 
         <a class="tool-tile" href="https://arlito331.github.io/fixwatch/">
-          <div class="tool-icon" style="background:var(--green);">F</div>
+          <div class="tool-icon" style="background:var(--green);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0a0a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5" stroke-width="1.3" opacity=".5"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>
+          </div>
           <div class="tool-name">FixWatch</div>
           <div class="tool-desc">Durability tracker — location + date for every PowerPatch fix, days holding</div>
         </a>
@@ -144,31 +136,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
 </div>
 
 <script>
-// Shared passcode gate — change this to your own, then redeploy.
-const HUB_PASSCODE = 'powerfix2026';
-
+// No visible login — click the "x" in "PowerFix" to unlock.
 function showPage(){
   document.getElementById('lockOverlay').style.display = 'none';
   document.getElementById('page').style.display = 'grid';
 }
 
 function tryUnlock(){
-  const val = document.getElementById('passInput').value;
-  if (val === HUB_PASSCODE){
-    localStorage.setItem('pf_hub_unlocked', '1');
-    showPage();
-  } else {
-    document.getElementById('lockError').textContent = 'Incorrect passcode.';
-    document.getElementById('passInput').value = '';
-    document.getElementById('passInput').focus();
-  }
+  localStorage.setItem('pf_hub_unlocked', '1');
+  showPage();
 }
 
 function lockHub(){
   localStorage.removeItem('pf_hub_unlocked');
   document.getElementById('page').style.display = 'none';
   document.getElementById('lockOverlay').style.display = 'flex';
-  document.getElementById('passInput').value = '';
 }
 
 if (localStorage.getItem('pf_hub_unlocked') === '1') showPage();

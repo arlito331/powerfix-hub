@@ -11,33 +11,45 @@
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;}
 
-.page{display:grid;grid-template-columns:minmax(0,560px) 1fr;min-height:100vh;}
+/* ---- lock screen ---- */
+.lock-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;}
+.lock-card{width:100%;max-width:340px;}
+.lock-card .brand{margin-bottom:32px;}
+.lock-title{font-size:26px;font-weight:700;letter-spacing:-0.6px;margin-bottom:6px;}
+.lock-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.lock-field label{display:block;font-size:10px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-bottom:7px;}
+.lock-field input{width:100%;background:#0a0a0a;border:1px solid var(--border);color:var(--text);border-radius:7px;padding:11px 14px;font-size:14px;outline:none;font-family:inherit;}
+.lock-field input:focus{border-color:var(--blue);}
+.lock-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:7px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;margin-top:18px;}
+.lock-btn:hover{background:#3369c4;}
+.lock-error{font-size:12px;color:var(--red);margin-top:10px;min-height:14px;}
 
-/* ---- left panel ---- */
-.panel-left{display:flex;flex-direction:column;padding:40px 56px;}
-.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;}
+/* ---- shared brand ---- */
 .brand{display:flex;align-items:center;gap:9px;}
 .brand-mark{width:26px;height:26px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .brand-name{font-size:17px;font-weight:700;letter-spacing:-0.3px;}
 .brand-name span{color:var(--red);}
-.docs-link{font-size:12px;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:7px 13px;transition:border-color .15s,color .15s;}
-.docs-link:hover{border-color:var(--muted);color:var(--text);}
+
+/* ---- main page (hidden until unlocked) ---- */
+.page{display:none;grid-template-columns:minmax(0,760px) 1fr;min-height:100vh;}
+
+.panel-left{display:flex;flex-direction:column;padding:40px 56px;}
+.top-bar{margin-bottom:auto;}
 
 .content{padding:96px 0;}
 .headline{font-size:44px;font-weight:700;letter-spacing:-1.2px;line-height:1.1;margin-bottom:12px;}
 .subhead{font-size:15px;color:var(--muted);margin-bottom:44px;}
 
-.tool-list{display:flex;flex-direction:column;gap:10px;}
-.tool-row{display:flex;align-items:center;gap:14px;background:transparent;border:1px solid var(--border);border-radius:9px;padding:15px 16px;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;}
-.tool-row:hover{border-color:#3a3a3a;background:#131313;}
-.tool-icon{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0a0a0a;}
-.tool-text{flex:1;min-width:0;}
-.tool-name{font-size:14px;font-weight:600;}
-.tool-desc{font-size:12px;color:var(--dim);margin-top:1px;}
-.tool-arrow{color:var(--dim);font-size:14px;flex-shrink:0;transition:color .15s,transform .15s;}
-.tool-row:hover .tool-arrow{color:var(--muted);transform:translateX(2px);}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.tool-tile{display:block;background:transparent;border:1px solid var(--border);border-radius:10px;padding:20px;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s,transform .15s;}
+.tool-tile:hover{border-color:#3a3a3a;background:#131313;transform:translateY(-2px);}
+.tool-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:14px;}
+.tool-name{font-size:14px;font-weight:600;margin-bottom:4px;}
+.tool-desc{font-size:12px;color:var(--dim);line-height:1.5;}
 
 .footer{font-size:10px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;margin-top:40px;}
+.footer a{color:var(--dim);text-decoration:none;margin-left:10px;border-left:1px solid var(--border);padding-left:10px;}
+.footer a:hover{color:var(--muted);}
 
 /* ---- right panel ---- */
 .panel-right{background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:64px;}
@@ -50,15 +62,34 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
   .page{grid-template-columns:1fr;}
   .panel-right{display:none;}
   .panel-left{padding:32px 24px;}
-  .top-bar{margin-bottom:40px;}
   .content{padding:24px 0;}
   .headline{font-size:32px;}
+  .tool-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<div class="page">
+<div class="lock-overlay" id="lockOverlay">
+  <div class="lock-card">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div class="brand-name">Power<span>Fix</span></div>
+    </div>
+    <div class="lock-title">Welcome back</div>
+    <div class="lock-sub">Enter the passcode to view developer tools.</div>
+    <div class="lock-field">
+      <label>Passcode</label>
+      <input type="password" id="passInput" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();tryUnlock();}"/>
+    </div>
+    <button class="lock-btn" onclick="tryUnlock()">Sign in →</button>
+    <div class="lock-error" id="lockError"></div>
+  </div>
+</div>
+
+<div class="page" id="page">
 
   <div class="panel-left">
     <div class="top-bar">
@@ -68,53 +99,40 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
         </div>
         <div class="brand-name">Power<span>Fix</span></div>
       </div>
-      <a class="docs-link" href="https://github.com/arlito331" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
 
     <div class="content">
       <div class="headline">Developer Tools</div>
       <div class="subhead">Internal PowerFix tools, one click away.</div>
 
-      <div class="tool-list">
-        <a class="tool-row" href="https://arlito331.github.io/potholewatch/">
+      <div class="tool-grid">
+        <a class="tool-tile" href="https://arlito331.github.io/potholewatch/">
           <div class="tool-icon" style="background:var(--red);">W</div>
-          <div class="tool-text">
-            <div class="tool-name">PotholeWatch</div>
-            <div class="tool-desc">Reactive incident monitor — scans news &amp; social media, emails evidence digests</div>
-          </div>
-          <span class="tool-arrow">→</span>
+          <div class="tool-name">PotholeWatch</div>
+          <div class="tool-desc">Reactive incident monitor — scans news &amp; social media, emails evidence digests</div>
         </a>
 
-        <a class="tool-row" href="https://arlito331.github.io/powerfix-case-study/">
+        <a class="tool-tile" href="https://arlito331.github.io/powerfix-case-study/">
           <div class="tool-icon" style="background:var(--blue);">C</div>
-          <div class="tool-text">
-            <div class="tool-name">Case Study Generator</div>
-            <div class="tool-desc">ROI PDFs — PowerFix vs. conventional government repair cost, by territory</div>
-          </div>
-          <span class="tool-arrow">→</span>
+          <div class="tool-name">Case Study Generator</div>
+          <div class="tool-desc">ROI PDFs — PowerFix vs. conventional government repair cost, by territory</div>
         </a>
 
-        <a class="tool-row" href="https://arlito331.github.io/potholeradar/">
+        <a class="tool-tile" href="https://arlito331.github.io/potholeradar/">
           <div class="tool-icon" style="background:var(--blue);">R</div>
-          <div class="tool-text">
-            <div class="tool-name">PotholeRadar</div>
-            <div class="tool-desc">Proactive area scanner — Street View + Claude Vision, no report needed</div>
-          </div>
-          <span class="tool-arrow">→</span>
+          <div class="tool-name">PotholeRadar</div>
+          <div class="tool-desc">Proactive area scanner — Street View + Claude Vision, no report needed</div>
         </a>
 
-        <a class="tool-row" href="https://arlito331.github.io/fixwatch/">
+        <a class="tool-tile" href="https://arlito331.github.io/fixwatch/">
           <div class="tool-icon" style="background:var(--green);">F</div>
-          <div class="tool-text">
-            <div class="tool-name">FixWatch</div>
-            <div class="tool-desc">Durability tracker — location + date for every PowerPatch fix, days holding</div>
-          </div>
-          <span class="tool-arrow">→</span>
+          <div class="tool-name">FixWatch</div>
+          <div class="tool-desc">Durability tracker — location + date for every PowerPatch fix, days holding</div>
         </a>
       </div>
     </div>
 
-    <div class="footer">PowerFix · Internal use only</div>
+    <div class="footer">PowerFix · Internal use only <a href="#" onclick="lockHub();return false;">Lock</a></div>
   </div>
 
   <div class="panel-right">
@@ -124,6 +142,37 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica
   </div>
 
 </div>
+
+<script>
+// Shared passcode gate — change this to your own, then redeploy.
+const HUB_PASSCODE = 'powerfix2026';
+
+function showPage(){
+  document.getElementById('lockOverlay').style.display = 'none';
+  document.getElementById('page').style.display = 'grid';
+}
+
+function tryUnlock(){
+  const val = document.getElementById('passInput').value;
+  if (val === HUB_PASSCODE){
+    localStorage.setItem('pf_hub_unlocked', '1');
+    showPage();
+  } else {
+    document.getElementById('lockError').textContent = 'Incorrect passcode.';
+    document.getElementById('passInput').value = '';
+    document.getElementById('passInput').focus();
+  }
+}
+
+function lockHub(){
+  localStorage.removeItem('pf_hub_unlocked');
+  document.getElementById('page').style.display = 'none';
+  document.getElementById('lockOverlay').style.display = 'flex';
+  document.getElementById('passInput').value = '';
+}
+
+if (localStorage.getItem('pf_hub_unlocked') === '1') showPage();
+</script>
 
 </body>
 </html>
